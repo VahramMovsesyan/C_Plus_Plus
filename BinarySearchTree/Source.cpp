@@ -114,7 +114,7 @@ public:
 		return two_child_interative_private(root);
 	}
 	
-//////////////////RECURSION////////////////////////
+//////////////////RECURSION TRAVERSAL////////////////////////
 	void preorderTraversal() {
 		preorderTraversal_private(root);
 	}
@@ -123,6 +123,77 @@ public:
 	}
 	void inorderTraversal() {
 		inorderTraversal_private(root);
+	}
+//////////////////INTERATIVE TRAVERSAL//////////////////////
+	void inOrder_interative(){
+		stack<Node*> s;
+		Node* curr = root;
+
+		while (curr != NULL || s.empty() == false){
+
+			while (curr != NULL){
+				s.push(curr);
+				curr = curr->left;
+			}
+
+			curr = s.top();
+			s.pop();
+
+			cout << curr->data << "->";
+
+			curr = curr->right;
+
+		} 
+	}
+	void Preorder_iterative(){
+		if (root == NULL)
+			return;
+
+		stack<Node*> nodeStack;
+		nodeStack.push(root);
+
+		/* Pop all items one by one. Do following for every popped item
+		   a) print it
+		   b) push its right child
+		   c) push its left child
+		Note that right child is pushed first so that left is processed first */
+		while (nodeStack.empty() == false) {
+			// Pop the top item from stack and print it
+			Node* node = nodeStack.top();
+			cout << node->data << "->";
+			nodeStack.pop();
+
+			// Push right and left children of the popped node to stack
+			if (node->right)
+				nodeStack.push(node->right);
+			if (node->left)
+				nodeStack.push(node->left);
+		}
+	}
+
+	void postorder_interative() {
+		// If empty return;
+		if (root == NULL) return;
+		stack <Node*> s1, s2;
+		Node* temp = root;
+		s1.push(temp);
+		// Continue till stack is empty 
+		while (!s1.empty()) {
+			temp = s1.top();
+			s1.pop();
+			// Push the top element of first stack
+			s2.push(temp);
+			// Push the left child of the top element
+			if (temp->left != NULL) s1.push(temp->left);
+			// Push the right child of the top element
+			if (temp->right != NULL) s1.push(temp->right);
+		}
+		// Print the second stack
+		while (!s2.empty()) {
+			cout << s2.top()->data << "->";
+			s2.pop();
+		}
+		cout << endl;
 	}
 };
 
@@ -160,16 +231,23 @@ int main() {
 	tree.print_in_order();*/
 
 	//tree.height();
+	
+	//cout << tree.one_child_recursive();
+
+	/*cout << tree.two_child_interative() << endl;
+	cout << tree.two_child_recursive();*/
+
 	tree.inorderTraversal();
 	cout << endl;
 	tree.preorderTraversal();
 	cout << endl;
 	tree.postorderTraversal();
 	cout << endl;
-	//cout << tree.one_child_recursive();
-
-	/*cout << tree.two_child_interative() << endl;
-	cout << tree.two_child_recursive();*/
+	tree.inOrder_interative();
+	cout << endl;
+	tree.Preorder_iterative();
+	cout << endl;
+	tree.postorder_interative();
 	return 0;
 }
 
