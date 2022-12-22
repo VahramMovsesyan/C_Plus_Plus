@@ -1,4 +1,6 @@
 ﻿#include <iostream>
+#include <queue>
+#include <stack>
 using namespace std;
 
 struct Node {
@@ -23,6 +25,19 @@ class BST {
 	int find_min_private(Node* ptr);
 	void delete_node_private(int key, Node* ptr);
 	void remove_match(Node* parent, Node* match, bool left); // left = true, եթե match-ը parent-ի ձախ ճյուղն է 
+	
+	//ծառի բարձրություն։ (լայնակի շրջանցում)
+	void height_private(Node* root);
+	//1 որդի ունեցող հանգույցների քանակը
+	//Ռեկուրսիվ
+	int one_child_recursive_private(Node* root);
+
+	//2 որդի ունեցող հանգույցների քանակը
+	int two_child_recursive_private(Node* a);
+	// Ոչ ռեկուրսիվ
+	int two_child_interative_private(Node* a);
+	
+
 
 public:
 	BST() {
@@ -58,11 +73,11 @@ public:
 
 		if (ptr != NULL) {
 			cout << "Parent Node = " << ptr->data << endl;
-			
+
 			ptr->left == NULL ?
 				cout << "Left child = NULL\n" :
 				cout << "Left child = " << ptr->left->data << endl;
-			
+
 			ptr->right == NULL ?
 				cout << "Right child = NULL\n" :
 				cout << "Right child = " << ptr->right->data << endl;
@@ -79,35 +94,139 @@ public:
 	void delete_node(int key) {
 		delete_node_private(key, root);
 	}
+
+	void height(){
+		height_private(root);
+	}
+
+	int one_child_recursive() {
+		return one_child_recursive_private(root);
+	}
+
+	int two_child_recursive() {
+		return two_child_recursive_private(root);
+	}
+
+	int two_child_interative() {
+		return two_child_interative_private(root);
+	}
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
 int main() {
-	int dataArr[16] = {50, 76, 21, 4, 32, 64, 15, 52, 14, 100, 83, 2, 3, 70, 87, 80};
-	
+	int dataArr[17] = {50, 76, 21, 4, 32, 64, 15, 52, 14, 100, 83, 2, 3, 1, 70, 87, 80};
+
 	BST tree;
 
 	for (int i : dataArr) {
 		tree.insert(i);
 	}
 
-	
-	tree.print_in_order();
-	cout << endl;
+
+	/*tree.print_in_order();
+	cout << endl;*/
 	/*Node* node = tree.get_node(32);
 	cout << node->data;
 	*/
 
 	//tree.print_children(tree.get_root_data());
 	//cout << tree.find_min();
-	tree.delete_node(50);
-	tree.print_in_order();
+	/*tree.delete_node(50);
+	tree.print_in_order();*/
+
+	//tree.height();
+
+	//cout << tree.one_child_recursive();
+
+	/*cout << tree.two_child_interative() << endl;
+	cout << tree.two_child_recursive();*/
 	return 0;
 }
 
 
 
 
+
+
+
+
+
+int BST::two_child_interative_private(Node* node)
+{
+	int count = 0;
+	stack <Node*> my_stack;
+
+	bool b = true;
+	while (b)
+	{
+		while (node != NULL)
+		{
+			
+			if (node->left && node->right) {
+				my_stack.push(node);
+				count++;
+			}
+			node = node->left;
+		}
+		if (my_stack.empty()) b = false;
+		else {
+			node = my_stack.top();
+			my_stack.pop();
+			node = node->right;
+		}	return count;
+	}
+}
+
+int BST::two_child_recursive_private(Node* a)
+{
+	if (a == NULL) return 0;
+	int k = 0;
+	if (a->left && a->right)
+		k = 1; 
+	return two_child_recursive_private(a->left) + two_child_recursive_private(a->right) + k;
+}
+
+
+int BST::one_child_recursive_private(Node* root)
+{
+	if (root == NULL) return 0;
+	int k = 0;
+	if ((!root->left && root->right) || (root->left && !root->right))
+		k = 1; return one_child_recursive_private(root->left) + one_child_recursive_private(root->right) + k;
+}
+
+//ծառի բարձրություն։ (լայնակի շրջանցում)
+void BST::height_private(Node* root) {
+
+	Node* p = root;
+	queue <Node*> A;
+	int level = 0, t = 1, k;
+	A.push(p);
+	while (!A.empty())
+	{
+		k = 0;
+		for (int i = 0; i < t; i++)
+		{
+			p = A.front(); A.pop();
+			if (p->left) { A.push(p->left); k++; }
+			if (p->right) { A.push(p->right); k++; }
+		}
+		level++;
+		t = k;
+	}
+	cout << level;
+}
 
 void BST::remove_match(Node* parent, Node* match, bool left) {
 	if (root != NULL) {
@@ -122,7 +241,7 @@ void BST::remove_match(Node* parent, Node* match, bool left) {
 			delete temp;
 			cout << "The node containing data " << match_data << " was removed" << endl;
 		}
-		
+
 		// երբ ջնջվող node-ը ունի 1 ճյուղ(երեխա)
 
 		// երբ այդ ճյուղը աջ ճյուղն է
