@@ -37,6 +37,9 @@ class BST {
 	// Ոչ ռեկուրսիվ
 	int two_child_interative_private(Node* a);
 	
+	void preorderTraversal_private(Node* node);
+	void postorderTraversal_private(Node* node);
+	void inorderTraversal_private(Node* node);
 
 
 public:
@@ -110,6 +113,17 @@ public:
 	int two_child_interative() {
 		return two_child_interative_private(root);
 	}
+	
+//////////////////RECURSION////////////////////////
+	void preorderTraversal() {
+		preorderTraversal_private(root);
+	}
+	void postorderTraversal() {
+		postorderTraversal_private(root);
+	}
+	void inorderTraversal() {
+		inorderTraversal_private(root);
+	}
 };
 
 
@@ -146,7 +160,12 @@ int main() {
 	tree.print_in_order();*/
 
 	//tree.height();
-
+	tree.inorderTraversal();
+	cout << endl;
+	tree.preorderTraversal();
+	cout << endl;
+	tree.postorderTraversal();
+	cout << endl;
 	//cout << tree.one_child_recursive();
 
 	/*cout << tree.two_child_interative() << endl;
@@ -159,7 +178,35 @@ int main() {
 
 
 
+// Preorder traversal
+void BST::preorderTraversal_private(struct Node* node) {
+	if (node == NULL)
+		return;
 
+	cout << node->data << "->";
+	preorderTraversal_private(node->left);
+	preorderTraversal_private(node->right);
+}
+
+// Postorder traversal
+void BST::postorderTraversal_private(struct Node* node) {
+	if (node == NULL)
+		return;
+
+	postorderTraversal_private(node->left);
+	postorderTraversal_private(node->right);
+	cout << node->data << "->";
+}
+
+// Inorder traversal
+void BST::inorderTraversal_private(struct Node* node) {
+	if (node == NULL)
+		return;
+
+	inorderTraversal_private(node->left);
+	cout << node->data << "->";
+	inorderTraversal_private(node->right);
+}
 
 
 int BST::two_child_interative_private(Node* node)
